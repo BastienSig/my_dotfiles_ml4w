@@ -12,7 +12,7 @@ You can find all installation options in the documentation of the ML4W OS for Hy
 
 Test the ML4W OS without risk on your computer or in a Virtual Machine with the ML4W Live ISO.
 
-<a href="https://ml4w.com/iso/ml4w-os/ml4w-os-2.10.0-x86_64.iso">Download the ML4W ISO</a>
+<a href="https://ml4w.com/iso/ml4w-os/ml4w-os-2.10.0a0-x86_64.iso">Download the ML4W ISO</a>
 
 You can install the ML4W OS on your hard drive with the command `sudo install-ml4w-os` (BETA).
 
@@ -27,12 +27,7 @@ Copy the following url into the Dotfiles Installer and start the installation.
 #### Stable Release
 
 ```
-https://raw.githubusercontent.com/mylinuxforwork/dotfiles/main/hyprland-dotfiles-stable.dotinst
-```
-#### Rolling Release
-
-```
-https://raw.githubusercontent.com/mylinuxforwork/dotfiles/main/hyprland-dotfiles.dotinst
+https://raw.githubusercontent.com/BastienSig/my_dotfiles_ml4w/master/hyprland-dotfiles-stable.dotinst
 ```
 
 Setup scripts to install the required dependencies are included for <i class="devicon-archlinux-plain"></i> **Arch, <i class="devicon-fedora-plain"></i> Fedora and <i class="devicon-opensuse-plain"></i> openSuse Tumbleweed**.<br>
