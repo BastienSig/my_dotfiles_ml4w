@@ -7,7 +7,7 @@
 	"homepage": "https://mylinuxforwork.github.io/dotfiles/",
 	"dependencies": "https://mylinuxforwork.github.io/dotfiles/getting-started/dependencies",
 	"source": "git@github.com:BastienSig/my_dotfiles_ml4w.git",
-	"tag":"2.10.0a1",
+	"tag":"2.10.1a0",
 	"subfolder": "dotfiles",
 	"setupscript":"setup/setup.sh",
 	"restore":[
