@@ -58,4 +58,8 @@ tools=(
     "tesseract"
     "wl-clipboard"
     "btop"
+    "rocm-smi-lib"
+    "fprintd"
+    "openvpn"
+    "keyd"
 )
