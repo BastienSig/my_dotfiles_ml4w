@@ -5,7 +5,7 @@ Version 2.10.1
 - Add script to install sddm and the ml4w theme based on SilentSDDM ~/.config/ml4w/scripts/ml4w-install-sddm or from the Welcome App/Settings/Display Manager
 - Started to cleanup and renaming scripts in ~/.config/ml4w/scripts/ Please make sure that all your customizations target to the new file names.
 
-Version 2.10.0a0
+Version 2.10.0a1
 --------------------------------------------------------
 - Project renamed to ML4W OS
 - Live ISO and installation script available (BETA)
