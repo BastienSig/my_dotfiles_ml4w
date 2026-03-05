@@ -3,131 +3,6 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # --------------------------------------------------------------
-# Library
-# --------------------------------------------------------------
-
-source $SCRIPT_DIR/_lib.sh
-
-# --------------------------------------------------------------
-# General Packages
-# --------------------------------------------------------------
-
-source $SCRIPT_DIR/pkgs.sh
-
-# --------------------------------------------------------------
-# Distro related packages
-# --------------------------------------------------------------
-
-packages=(
-    # Hyprland
-    "hyprland-devel"
-    "hyprland-qtutils"
-    # Tools
-    "eza"
-    "libnotify-tools"
-    "libqt5-qtwayland"
-    "qt6-wayland"
-    "python313-pipx"
-    "ImageMagick"
-    "NetworkManager-connection-editor"
-    "NetworkManager-tui"
-    "tesseract-ocr-traineddata-eng"
-    "hyprsunset"
-    # Apps
-    "SwayNotificationCenter"
-    # Fonts
-    "fontawesome-fonts"
-    # Display Manager
-    "sddm-qt6"
-    "libQt6Svg6"
-    "qt6-virtualkeyboard"
-    "qt6-virtualkeyboard-imports"
-    "qt6-multimedia"
-    "qt6-multimedia-imports"
-    # System
-    "gvfs-backend"
-)
-
-_isInstalled() {
-    package="$1"
-    package_info=$(zypper se -i "$package" 2>/dev/null | grep "^i" | awk '{print $3}')
-    ret=1
-    for pkg in $package_info
-    do
-	if [ "$package" == "$pkg" ]; then
-		ret=0
-		break
-	fi
-	done
-	echo $ret
-}
-
-_installPackages() {
-    for pkg; do
-        if [[ $(_isInstalled "${pkg}") == 0 ]]; then
-            echo "${pkg} is already installed."
-            continue
-        fi
-        sudo zypper -n install "${pkg}"
-    done
-}
-
-# --------------------------------------------------------------
-# Install Gum
-# --------------------------------------------------------------
-
-if [[ $(_checkCommandExists "gum") == 0 ]]; then
-    echo ":: gum is already installed"
-else
-    echo ":: The installer requires gum. gum will be installed now"
-    sudo zypper -n install gum
-fi
-
-# --------------------------------------------------------------
-# Header
-# --------------------------------------------------------------
-
-_writeHeader "openSuse Tumbleweed"
-
-# --------------------------------------------------------------
-# General
-# --------------------------------------------------------------
-
-_installPackages "${general[@]}"
-
-# --------------------------------------------------------------
-# Apps
-# --------------------------------------------------------------
-
-_installPackages "${apps[@]}"
-
-# --------------------------------------------------------------
-# Tools
-# --------------------------------------------------------------
-
-_installPackages "${tools[@]}"
-
-# --------------------------------------------------------------
-# Packages
-# --------------------------------------------------------------
-
-_installPackages "${packages[@]}"
-
-# --------------------------------------------------------------
-# Hyprland
-# --------------------------------------------------------------
-
-_installPackages "${hyprland[@]}"
-
-# --------------------------------------------------------------
-# Create .local/bin folder
-# --------------------------------------------------------------
-
-if [ ! -d $HOME/.local/bin ]; then
-    mkdir -p $HOME/.local/bin
-fi
-
-# --------------------------------------------------------------
 # Oh My Posh
 # --------------------------------------------------------------
 
@@ -213,13 +88,13 @@ source $SCRIPT_DIR/_fonts.sh
 source $SCRIPT_DIR/_icons.sh
 
 # --------------------------------------------------------------
+# Migrate
+# --------------------------------------------------------------
+
+source $SCRIPT_DIR/migrate.sh
+
+# --------------------------------------------------------------
 # Create XDG Directories
 # --------------------------------------------------------------
 
 xdg-user-dirs-update
-
-# --------------------------------------------------------------
-# Finish
-# --------------------------------------------------------------
-
-_finishMessage

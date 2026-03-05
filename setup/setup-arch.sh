@@ -35,11 +35,11 @@ packages=(
     "network-manager-applet"
     "imagemagick"
     "polkit-gnome"
-    "hyprshade"
     "grimblast-git"
     "pacman-contrib"
     "loupe"
     "power-profiles-daemon"
+    "hyprsunset"
     # Apps
     "waypaper"
     "swaync"
@@ -57,6 +57,8 @@ packages=(
     "qt6-svg"
     "qt6-virtualkeyboard"
     "qt6-multimedia-ffmpeg"
+    # System
+    "gvfs-mtp"
 )
 
 _isInstalled() {
