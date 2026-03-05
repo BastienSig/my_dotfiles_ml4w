@@ -1,3 +1,25 @@
+Version 2.11.2
+--------------------------------------------------------
+- New snapshot script for timeshift and grub-btrfs ~/.config/ml4w/scripts/ml4w-snapshot supporting Arch, Fedora based distros and openSuse Tumbleweed
+- New pacman update script for Arch to enable colors, parallel downloads and ILoveCandy ~/.config/ml4w/scripts/ml4w-pacman
+
+
+Version 2.11.1
+--------------------------------------------------------
+- Compatible with Hyprland 0.54.x
+- Neovim configuration moved to own repository https://github.com/mylinuxforwork/ml4w-nvim 
+- Install the ML4W nvim configuration from the Welcome App in Settings/Options or with ~/.config/ml4w/scripts/ml4w-install-nvim
+- New default icon theme kora-pgrey
+- Switched back to Bibata Cursor Theme
+- New keybinding: SUPER+SHIFT+M to toggle between dark and light mode
+- Hyprshade replaced with Hyprsunset. Configuration in ~./config/hypr/hyprsunset.conf (can be restored for updates)
+
+Version 2.11.0
+--------------------------------------------------------
+- The SDDM script can copy the current wallpaper to SDDM and use it as a background image. Start the script with ~/.config/ml4w/scripts/ml4w-install-sddm or from the Welcome App/Settings/Display Manager
+- New installation script based on the script based ML4W Dotfiles Installer
+- New Default Wallpaper
+
 Version 2.10.1
 --------------------------------------------------------
 - ML4W Logo added to fastfetch
