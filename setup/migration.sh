@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-echo ":: Running Migration script..."
-
 # Move nvim folder to .config
 NVIM_DIR="$HOME/.config/nvim"
 if [ -L $NVIM_DIR ]; then
@@ -31,4 +29,28 @@ fi
 FLATPAK_ID="com.ml4w.sidebar"
 if flatpak info "$FLATPAK_ID" > /dev/null 2>&1; then
     flatpak remove -y $FLATPAK_ID
+fi
+FLATPAK_ID="com.ml4w.dotfilesinstaller"
+if flatpak info "$FLATPAK_ID" > /dev/null 2>&1; then
+    flatpak remove -y $FLATPAK_ID
+fi
+
+# Remove matugen from .local/bin
+if [ -f $HOME/.local/bin/matugen ]; then
+    rm "$HOME/.local/bin/matugen"
+    info "matugen removed from ~/.local/bin"
+fi
+
+# Remove default52.conf windowrule
+if [ -f $HOME/.config/hypr/conf/windowrules/default52.conf ]; then
+    rm "$HOME/.config/hypr/conf/windowrules/default52.conf"
+    info "default52.conf windowrule removed."
+fi
+
+if [ -f $HOME/.config/ml4w/settings/wallpaper-effect.sh ]; then
+    mv $HOME/.config/ml4w/settings/wallpaper-effect.sh $HOME/.config/ml4w/settings/wallpaper-effect
+fi
+
+if [ -f $HOME/.config/ml4w/settings/wallpaper-automation.sh ]; then
+    mv $HOME/.config/ml4w/settings/wallpaper-automation.sh $HOME/.config/ml4w/settings/wallpaper-automation
 fi

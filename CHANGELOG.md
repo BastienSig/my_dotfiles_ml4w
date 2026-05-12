@@ -1,3 +1,23 @@
+Version 2.12.3
+--------------------------------------------------------
+- Compatible with Hyprland 0.55.x (legacy conf). Change to Lua will follow soon with 2.13.
+- Fastfetch can be deactivated and activated from the sidebar
+
+Version 2.12.2
+--------------------------------------------------------
+- Update matugen to the latest version
+- Using awww as default wallpaper engine
+- Transition effects can be set in the Settings App and Appearance
+- New Quickshell based wallpaper selector. Toggle with SUPER+CTRL+W
+- Waypaper can be selected optionally in the Settings App and Default Apps but must be installed separately.
+
+Version 2.12.1
+--------------------------------------------------------
+- Replaced swww with awww
+- Installation of waypaper-git to support awww and latest hyprpaper
+- Compatible with Hyprland 0.54.3
+- Welcome App url fixes
+
 Version 2.12.0
 --------------------------------------------------------
 - Flatpaks ML4W Welcome App, Settings App, Sidebar App and Calendar App replaced with Quickshell
