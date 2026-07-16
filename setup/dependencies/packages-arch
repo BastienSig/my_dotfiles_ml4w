@@ -1,4 +1,6 @@
 hyprland
+hyprsysteminfo
+hyprshutdown
 libnotify
 qt5-wayland
 qt6-wayland
@@ -35,3 +37,4 @@ rocm-smi-lib
 networkmanager-openvpn
 networkmanager-vpn-pluging-openvpn
 matugen
+nwg-displays
