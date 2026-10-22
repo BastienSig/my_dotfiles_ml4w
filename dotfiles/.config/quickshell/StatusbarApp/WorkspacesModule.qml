@@ -13,6 +13,10 @@ RowLayout {
     // exists (e.g. switching to workspace 6 while this is 5 adds a 6th dot).
     property int minWorkspaces: 5
 
+    // Hyprland monitor this bar sits on. Its active workspace is the one
+    // highlighted, so each screen shows its own workspace (not the global one).
+    property var monitor: null
+
     // The individual workspace buttons, exposed so StatusbarWindow can splice
     // them into its keyboard-navigation list. Rebuilt whenever workspaces are
     // added or removed.
@@ -62,9 +66,13 @@ RowLayout {
             // Set by StatusbarWindow's keyboard navigation.
             property bool focused: false
 
-            // Whether this workspace is the currently focused one.
-            readonly property bool isActive: Hyprland.focusedWorkspace
-                && Hyprland.focusedWorkspace.id === ws.modelData
+            // Whether this workspace is the one shown on this bar's monitor
+            // (falls back to the globally focused workspace).
+            readonly property var shownWorkspace: (wsRoot.monitor && wsRoot.monitor.activeWorkspace)
+                ? wsRoot.monitor.activeWorkspace
+                : Hyprland.focusedWorkspace
+            readonly property bool isActive: shownWorkspace
+                && shownWorkspace.id === ws.modelData
             // Whether the workspace currently holds windows (exists in Hyprland).
             readonly property bool occupied: wsRoot.workspaceById(ws.modelData) !== null
 

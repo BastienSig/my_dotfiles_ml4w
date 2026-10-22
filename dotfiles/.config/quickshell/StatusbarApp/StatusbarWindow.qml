@@ -232,6 +232,7 @@ PanelWindow {
         id: cWorkspaces
         WorkspacesModule {
             minWorkspaces: root.settings.workspaces.count
+            monitor: root.screen ? Hyprland.monitorFor(root.screen) : null
         }
     }
     Component { id: cLauncher;   LauncherModule {} }
@@ -397,32 +398,27 @@ PanelWindow {
         root.barExpanded = false
     }
 
-    IpcHandler {
-        target: "statusbar"
-        function toggle(): void { root.setEnabled(!root.settings.bar.enabled) }
-        // Named enable/disable rather than show/hide: "show" is a reserved
-        // subcommand of "qs ipc" and would never reach the function.
-        function enable(): void { root.setEnabled(true) }
-        function disable(): void { root.setEnabled(false) }
-        // Persist and apply the alwaysExpanded (permanently expanded) mode,
-        // toggled from the SidebarApp switch.
-        function alwaysExpand(): void { root.setAlwaysExpanded(true) }
-        function autoCollapse(): void { root.setAlwaysExpanded(false) }
-        // Re-read statusbar.json from disk (used by the SidebarApp switch).
-        function refresh(): void { root.reloadSettings() }
-        // Expand the bar (if needed) and grab the keyboard for navigation.
-        // Bound to SUPER + SPACE. Idempotent: when the bar is already expanded
-        // it only re-grabs keyboard focus instead of toggling back to collapsed,
-        // so the keybinding always lands in keyboard-navigation mode.
-        function focus(): void {
-            root.barExpanded = true
-            keyHandler.forceActiveFocus()
-        }
-        // Toggle between collapsed and expanded mode.
-        function expand(): void { root.barExpanded = !root.barExpanded }
-        function collapse(): void { root.barExpanded = false }
-        // Re-read statusbar.json and apply the changes.
-        function reload(): void { root.reloadSettings() }
+    // The "statusbar" IPC target lives in shell.qml (one bar per screen) and
+    // forwards to these functions on the relevant bar(s).
+
+    // Expand the bar (if needed) and grab the keyboard for navigation.
+    // Bound to SUPER + SPACE. Idempotent: when the bar is already expanded
+    // it only re-grabs keyboard focus instead of toggling back to collapsed,
+    // so the keybinding always lands in keyboard-navigation mode.
+    function focusBar(): void {
+        root.barExpanded = true
+        keyHandler.forceActiveFocus()
+    }
+
+    // Call fn on every placed module (used by the "updates" IPC target).
+    function forEachModule(fn): void {
+        let groups = [leftRepeater, centerRepeater, rightRepeater]
+        for (let g = 0; g < groups.length; g++)
+            for (let i = 0; i < groups[g].count; i++) {
+                let loader = groups[g].itemAt(i)
+                if (loader && loader.item)
+                    fn(loader.item)
+            }
     }
 
     color: "transparent"
