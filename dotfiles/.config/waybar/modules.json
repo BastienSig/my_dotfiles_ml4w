@@ -18,9 +18,6 @@
       "urgent": "",
       "active": "",
       "default": ""
-    },
-    "persistent-workspaces": {
-      "*": 5
     }
   },
   // Taskbar
