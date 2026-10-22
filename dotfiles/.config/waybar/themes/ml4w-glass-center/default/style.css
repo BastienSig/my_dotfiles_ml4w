@@ -4,3 +4,9 @@
 @import '../../../../../.config/waybar/colors.css';
 
 @import '../../ml4w-glass/style.css';
+
+/* Size the workspaces block to its content: only existing workspaces are
+ * shown, so a fixed minimum width leaves empty space on the right. */
+#workspaces {
+    min-width: 0;
+}
