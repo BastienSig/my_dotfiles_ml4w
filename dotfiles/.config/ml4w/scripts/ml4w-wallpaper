@@ -122,14 +122,12 @@ run_matugen() {
 }
 
 reload_waybar() {
-    if pgrep -x waybar >/dev/null; then
-        pkill -SIGUSR2 waybar
-        info "Waybar reloaded"
-    else
-        nohup bash -c "$HOME/.config/waybar/launch.sh" >/dev/null 2>&1 &
-        disown
-        info "Waybar launched"
-    fi
+    # Full restart instead of SIGUSR2: a SIGUSR2 reload breaks the
+    # hyprland/workspaces module (workspaces disappear until restart).
+    [ -f "$HOME/.config/ml4w/settings/waybar-disabled" ] && return 0
+    nohup bash -c "$HOME/.config/waybar/launch.sh" >/dev/null 2>&1 &
+    disown
+    info "Waybar restarted"
 }
 
 reload_nwg_dock() {
