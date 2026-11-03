@@ -1,37 +1,17 @@
 #!/usr/bin/env bash
 
 # --------------------------------------------------------------
-# Oh My Posh
-# --------------------------------------------------------------
-curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
-
-# --------------------------------------------------------------
-# ML4W Settings App
+# Pipx
 # --------------------------------------------------------------
 
-bash <(curl -s https://raw.githubusercontent.com/mylinuxforwork/ml4w-dotfiles-settings/main/setup.sh)
+echo ":: Installing packages with pipx"
+pipx install pywalfox
+pywalfox-install
 
 # --------------------------------------------------------------
-# Cursors
+# Grimblast
 # --------------------------------------------------------------
 
-source $repo_path/setup/_cursors.sh
+pacman -Qi grimblast-git &>/dev/null || source $repo_path/setup/clean-install-grimblast.sh
 
-# --------------------------------------------------------------
-# Fonts
-# --------------------------------------------------------------
-
-source $repo_path/setup/_fonts.sh
-
-# --------------------------------------------------------------
-# Icons
-# --------------------------------------------------------------
-
-source $repo_path/setup/_icons.sh
-
-# --------------------------------------------------------------
-# Create XDG Directories
-# --------------------------------------------------------------
-
-xdg-user-dirs-update
 

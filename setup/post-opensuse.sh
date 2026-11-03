@@ -30,18 +30,6 @@ sudo zypper refresh
 sudo zypper --non-interactive --gpg-auto-import-keys install quickshell
 
 # --------------------------------------------------------------
-# Oh My Posh
-# --------------------------------------------------------------
-
-curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
-
-# --------------------------------------------------------------
-# ML4W Settings App
-# --------------------------------------------------------------
-
-bash <(curl -s https://raw.githubusercontent.com/mylinuxforwork/ml4w-dotfiles-settings/main/setup.sh)
-
-# --------------------------------------------------------------
 # Cargo
 # --------------------------------------------------------------
 
@@ -50,6 +38,7 @@ TARGET_VERSION="4.0.0"
 force_install_matugen() {
     info "Running: cargo install matugen --force"
     cargo install matugen --force
+    info "matugen installed."
 }
 
 if ! command -v matugen &> /dev/null; then
@@ -67,11 +56,10 @@ else
 fi
 
 # --------------------------------------------------------------
-# JetBrains Mono Nerd Font
+# JetBrains Mono Font
 # --------------------------------------------------------------
 
-sudo zypper addrepo https://download.opensuse.org/repositories/X11:fonts/openSUSE_Factory/X11:fonts.repo
-sudo zypper -n install jetbrainsmono-nerd-fonts
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/install_manual.sh)"
 
 # --------------------------------------------------------------
 # Pip
@@ -79,6 +67,7 @@ sudo zypper -n install jetbrainsmono-nerd-fonts
 
 echo ":: Installing packages with pip"
 pipx install pywalfox
+pywalfox-install
 
 # --------------------------------------------------------------
 # Grimblast
@@ -86,26 +75,3 @@ pipx install pywalfox
 
 source $repo_path/setup/clean-install-grimblast.sh
 
-# --------------------------------------------------------------
-# Cursors
-# --------------------------------------------------------------
-
-source $repo_path/setup/_cursors.sh
-
-# --------------------------------------------------------------
-# Fonts
-# --------------------------------------------------------------
-
-source $repo_path/setup/_fonts.sh
-
-# --------------------------------------------------------------
-# Icons
-# --------------------------------------------------------------
-
-source $repo_path/setup/_icons.sh
-
-# --------------------------------------------------------------
-# Create XDG Directories
-# --------------------------------------------------------------
-
-xdg-user-dirs-update

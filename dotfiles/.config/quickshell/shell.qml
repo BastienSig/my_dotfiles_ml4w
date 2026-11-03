@@ -4,9 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
 import "WelcomeApp"
-import "PowerApp"
 import "SidebarApp"
-import "CalendarApp"
 import "WallpaperApp"
 import "StatusbarApp"
 import "CustomTheme"
@@ -23,9 +21,7 @@ ShellRoot {
     }
 
     WelcomeWindow {}
-    PowerWindow {}
     SidebarWindow {}
-    CalendarWindow {}
     WallpaperWindow {}
 
     // One statusbar per screen. Instances are created/destroyed automatically

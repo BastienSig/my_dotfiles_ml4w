@@ -2,11 +2,11 @@
 	"name": "ML4W OS - Dotfiles for Hyprland (ROLLING RELEASE)",
 	"id": "com.ml4w.dotfiles",
 	"description": "Advanced configuration for the dynamic tiling window manager Hyprland.",
-	"version":"2.14.1a5",
+	"version":"2.16.1a1",
 	"author": "Stephan Raabe",
 	"homepage": "https://ml4w.com/os/",
 	"dependencies": "https://ml4w.com/os/getting-started/dependencies",
-	"source": "https://github.com/BastienSig/my_dotfiles_ml4w.git",
+	"source": "https://github.com/mylinuxforwork/dotfiles.git",
 	"subfolder": "dotfiles",
 	"restore":[
 		{
@@ -37,11 +37,6 @@
 		{
 			"title":"Monitor Variant",
 			"source":".config/hypr/conf/monitor.lua",
-			"value":true
-		},
-		{
-			"title":"Waypaper",
-			"source":".config/waypaper",
 			"value":true
 		},
 		{
