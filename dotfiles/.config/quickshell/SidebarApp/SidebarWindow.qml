@@ -3,6 +3,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Services.Mpris
+import Quickshell.Services.Pipewire
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -29,7 +30,7 @@ PanelWindow {
     }
 
     margins {
-        top: 52
+        top: 0
         bottom: 0
     }
 
@@ -366,8 +367,16 @@ PanelWindow {
                             Layout.fillWidth: true
                             spacing: 15
 
+                            // Keep the default sink's audio (volume/muted) properties live and writable.
+                            PwObjectTracker { objects: [Pipewire.defaultAudioSink] }
+
                             Image {
-                                source: "../shared/icons/volume.svg"
+                                id: volumeIcon
+                                readonly property PwNode sink: Pipewire.defaultAudioSink
+                                readonly property bool ready: sink !== null && sink.ready && sink.audio !== null
+                                readonly property bool muted: ready ? sink.audio.muted : false
+
+                                source: muted ? "../shared/icons/volume-muted.svg" : "../shared/icons/volume.svg"
                                 Layout.alignment: Qt.AlignVCenter
                                 Layout.preferredWidth: 20
                                 Layout.preferredHeight: 20
@@ -378,6 +387,16 @@ PanelWindow {
                                 layer.effect: MultiEffect {
                                     colorization: 1.0
                                     colorizationColor: Theme.primary
+                                }
+
+                                // Click toggles mute; Pipewire keeps the volume value while muted.
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        if (volumeIcon.ready)
+                                            volumeIcon.sink.audio.muted = !volumeIcon.sink.audio.muted
+                                    }
                                 }
                             }
 
@@ -430,6 +449,99 @@ PanelWindow {
                                     implicitHeight: 16
                                     radius: 8
                                     color: volumeSlider.pressed ? Theme.background : Theme.primary
+                                    border.color: Theme.primary
+                                    border.width: 1
+                                }
+                            }
+                        }
+
+                        // MICROPHONE SLIDER
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: 15
+
+                            // Keep the default source's audio (volume/muted) properties live and writable.
+                            PwObjectTracker { objects: [Pipewire.defaultAudioSource] }
+
+                            Image {
+                                id: micIcon
+                                readonly property PwNode node: Pipewire.defaultAudioSource
+                                readonly property bool ready: node !== null && node.ready && node.audio !== null
+                                readonly property bool muted: ready ? node.audio.muted : false
+
+                                source: muted ? "../shared/icons/mic-muted.svg" : "../shared/icons/mic.svg"
+                                Layout.alignment: Qt.AlignVCenter
+                                Layout.preferredWidth: 20
+                                Layout.preferredHeight: 20
+                                sourceSize.width: 20
+                                sourceSize.height: 20
+                                fillMode: Image.PreserveAspectFit
+                                layer.enabled: true
+                                layer.effect: MultiEffect {
+                                    colorization: 1.0
+                                    colorizationColor: Theme.primary
+                                }
+
+                                // Click toggles mute; Pipewire keeps the volume value while muted.
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        if (micIcon.ready)
+                                            micIcon.node.audio.muted = !micIcon.node.audio.muted
+                                    }
+                                }
+                            }
+
+                            Slider {
+                                id: micSlider
+                                Layout.fillWidth: true
+                                from: 0
+                                to: 100
+                                value: 50 // Default
+
+                                Process {
+                                    command: ["bash", "-c", "wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | awk '{print int($2 * 100)}'"]
+                                    running: root.isOpen
+                                    stdout: StdioCollector {
+                                        onStreamFinished: {
+                                            let val = parseInt(this.text.trim())
+                                            if (!isNaN(val)) micSlider.value = val;
+                                        }
+                                    }
+                                }
+
+                                onMoved: {
+                                    Quickshell.execDetached(["bash", "-c", "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ " + Math.round(value) + "%"])
+                                }
+
+                                background: Rectangle {
+                                    x: micSlider.leftPadding
+                                    y: micSlider.topPadding + micSlider.availableHeight / 2 - height / 2
+                                    implicitWidth: 200
+                                    implicitHeight: 6
+                                    width: micSlider.availableWidth
+                                    height: implicitHeight
+                                    radius: 3
+                                    color: Theme.background
+                                    border.color: Theme.primary
+                                    border.width: 1
+
+                                    Rectangle {
+                                        width: micSlider.visualPosition * parent.width
+                                        height: parent.height
+                                        color: Theme.primary
+                                        radius: 3
+                                    }
+                                }
+
+                                handle: Rectangle {
+                                    x: micSlider.leftPadding + micSlider.visualPosition * (micSlider.availableWidth - width)
+                                    y: micSlider.topPadding + micSlider.availableHeight / 2 - height / 2
+                                    implicitWidth: 16
+                                    implicitHeight: 16
+                                    radius: 8
+                                    color: micSlider.pressed ? Theme.background : Theme.primary
                                     border.color: Theme.primary
                                     border.width: 1
                                 }
@@ -845,7 +957,7 @@ PanelWindow {
                                     height: visible ? implicitHeight : 0
                                     onClicked: {
                                         root.isOpen = false
-                                        Quickshell.execDetached(["gnome-text-editor", Quickshell.env("HOME") + "/.config/ml4w/settings/waybar-quicklinks.json"])
+                                        Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/ml4w/settings/editor.sh " + Quickshell.env("HOME") + "/.config/ml4w/settings/waybar-quicklinks.json"])
                                     }
                                 }
                                 ML4WMenuItem {
@@ -1076,6 +1188,43 @@ PanelWindow {
                         }
                     }
 
+                    // --- WINDOW MODE ---
+                    // Global window mode, persisted to
+                    // ~/.config/ml4w/settings/window-mode by ml4w-window-mode
+                    // (missing = tiling). On = Floating, Off = Tiling.
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Text { text: "Window Mode"; color: Theme.primary; font.family: Theme.fontFamily; font.pixelSize: 16 }
+                        Item { Layout.fillWidth: true }
+                        Text {
+                            text: windowModeSwitch.checked ? "Floating" : "Tiling"
+                            color: Theme.primary
+                            opacity: 0.7
+                            font.family: Theme.fontFamily
+                            font.pixelSize: 14
+                            Layout.rightMargin: 8
+                        }
+                        ML4WSwitch {
+                            id: windowModeSwitch
+                            property bool ready: false
+                            Process {
+                                command: ["bash", "-c", "m=$(tr -d '[:space:]' < ~/.config/ml4w/settings/window-mode 2>/dev/null); [ \"$m\" = floating ] && echo 1 || echo 0"]
+                                running: root.isOpen
+                                stdout: StdioCollector {
+                                    onStreamFinished: {
+                                        windowModeSwitch.checked = (this.text.trim() === "1")
+                                        windowModeSwitch.ready = true
+                                    }
+                                }
+                            }
+                            onClicked: {
+                                if (!ready) return;
+                                Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/ml4w/scripts/ml4w-window-mode " + (checked ? "floating" : "tiling")])
+                            }
+                        }
+                        Item { implicitWidth: 28 }
+                    }
+
                     // --- GAMEMODE ---
                     RowLayout {
                         Layout.fillWidth: true
@@ -1178,6 +1327,13 @@ PanelWindow {
                         Layout.fillWidth: true
                         Text { text: "Wallpaper"; color: Theme.primary; font.family: Theme.fontFamily; font.pixelSize: 16 }
                         Item { Layout.fillWidth: true }
+                        ActionIcon {
+                            iconSrc: "../shared/icons/carousel.svg"
+                            onClicked: {
+                                root.isOpen = false
+                                Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/ml4w/scripts/ml4w-wallpaper-app --carousel"])
+                            }
+                        }
                         ActionIcon {
                             iconSrc: "../shared/icons/wallpaper.svg"
                             onClicked: {

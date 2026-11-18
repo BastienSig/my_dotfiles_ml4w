@@ -23,6 +23,7 @@ ShellRoot {
     WelcomeWindow {}
     SidebarWindow {}
     WallpaperWindow {}
+    WallpaperCarousel {}
 
     // One statusbar per screen. Instances are created/destroyed automatically
     // when monitors are plugged in or removed.

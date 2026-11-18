@@ -11,7 +11,7 @@ FloatingWindow {
     visible: false
     title: "ML4W Welcome"
     implicitWidth: 850
-    implicitHeight: 550
+    implicitHeight: 560
 
     // --- Guard property for the flatpak app ---
     property bool isHyprlandSettingsInstalled: false
@@ -124,19 +124,18 @@ FloatingWindow {
                 ML4WMenuItem { 
                     text: qsTr("Input");
                     onClicked: {
-                        Quickshell.execDetached(["gnome-text-editor", Quickshell.env("HOME") + "/.config/hypr/input.lua"])
+                        Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/ml4w/settings/editor.sh " + Quickshell.env("HOME") + "/.config/hypr/input.lua"])
                     }
                 }
                 ML4WMenuItem { 
                     text: qsTr("Gestures");
                     onClicked: {
-                        Quickshell.execDetached(["gnome-text-editor", Quickshell.env("HOME") + "/.config/hypr/gestures.lua"])
+                        Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/ml4w/settings/editor.sh " + Quickshell.env("HOME") + "/.config/hypr/gestures.lua"])
                     }
                 }
                 ML4WMenuItem { 
                     text: qsTr("Monitors");
                     onClicked: { 
-                        // Quickshell.execDetached(["gnome-text-editor", Quickshell.env("HOME") + "/.config/hypr/monitors.lua"])
                         Quickshell.execDetached(["nwg-displays"]) 
                     }
                 }
@@ -442,6 +441,7 @@ FloatingWindow {
                             ListElement { keys: "Super + Q"; desc: "to close the active window" }
                             ListElement { keys: "Super + CTRL + Enter"; desc: "to open the application launcher" }
                             ListElement { keys: "Super + CTRL + S"; desc: "to open the sidebar" }
+                            ListElement { keys: "Super + W"; desc: "to open the wallpaper carousel" }
                             ListElement { keys: "Super + CTRL + W"; desc: "to set a wallpaper" }
                         }
                         
@@ -477,7 +477,7 @@ FloatingWindow {
                             text: "Input"
 
                             onClicked: {
-                                Quickshell.execDetached(["gnome-text-editor", Quickshell.env("HOME") + "/.config/hypr/input.lua"])
+                                Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/ml4w/settings/editor.sh " + Quickshell.env("HOME") + "/.config/hypr/input.lua"])
                             }
 
                             background: Rectangle {

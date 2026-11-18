@@ -86,6 +86,7 @@ hl.bind(mainMod .. " + ALT + F", hl.dsp.exec_cmd("~/.config/hypr/scripts/screens
 hl.bind(mainMod .. " + ALT + S", hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh --instant-area"), { description = "Take an instant area screenshot" })
 hl.bind(mainMod .. " + ALT + A", hl.dsp.exec_cmd("~/.config/hypr/scripts/text-extractor.sh"), { description = "Extract text from an area" })
 hl.bind(mainMod .. " + CTRL + P", hl.dsp.exec_cmd("ml4w-powermenu toggle"), { description = "Start Power Menu" })
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("~/.config/ml4w/scripts/ml4w-wallpaper-app --carousel"), { description = "Open wallpaper carousel" })
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("~/.config/ml4w/scripts/ml4w-wallpaper-app --random"), { description = "Change the wallpaper" })
 hl.bind(mainMod .. " + CTRL + W", hl.dsp.exec_cmd("~/.config/ml4w/scripts/ml4w-wallpaper-app"), { description = "Open wallpaper selector" })
 hl.bind(mainMod .. " + ALT + W", hl.dsp.exec_cmd("~/.config/ml4w/scripts/ml4w-wallpaper-automation"), { description = "Start random wallpaper script" })
@@ -110,6 +111,10 @@ hl.bind(mainMod .. " + SHIFT + H", hl.dsp.exec_cmd("~/.config/ml4w/scripts/ml4w-
 hl.bind(mainMod .. " + Tab", hl.dsp.exec_cmd("qs -p ~/.local/share/quickshell-overview ipc call overview toggle"), { description = "Open Select Window Menu" })
 hl.bind("CTRL + ALT + T", hl.dsp.exec_cmd("~/.config/ml4w/themes/themes.sh"), { description = "Open theme switcher" })
 
+-- Hypr App Switcher
+hl.bind("ALT + Tab",         hl.dsp.exec_cmd("qs -p ~/.local/share/hypr-app-switcher ipc call app-switcher next"), { description = "Switch applications on active workspace" })
+hl.bind("ALT + SHIFT + Tab", hl.dsp.exec_cmd("qs -p ~/.local/share/hypr-app-switcher ipc call app-switcher prev"), { description = "Switch applications on active workspace (backwards)" })
+
 -- Special workspace (scratchpad)
 hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("scratchpad"), { description = "Toggle special workspace scratchpad" })
 hl.bind(mainMod .. " + SHIFT + S", function()
@@ -118,8 +123,47 @@ hl.bind(mainMod .. " + SHIFT + S", function()
 end, { description = "Move window to special workspace scratchpad" })
 
 -- Scroll through existing workspaces with mainMod + scroll
-hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }), { description = "Switch to next workspace" })
-hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }), { description = "Switch to previous workspace" })
+-- hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }), { description = "Switch to next workspace" })
+-- hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }), { description = "Switch to previous workspace" })
+
+hl.config({
+	binds = {
+		pass_mouse_when_bound = false,
+		scroll_event_delay = 1,
+	},
+})
+
+local scroll_locked = false
+
+local function throttled_scroll(dispatcher)
+	return function()
+		if scroll_locked then
+			return
+		end
+
+		scroll_locked = true
+		hl.dispatch(dispatcher)
+
+		hl.timer(function()
+			scroll_locked = false
+		end, {
+			timeout = 200,
+			type = "oneshot",
+		})
+	end
+end
+
+hl.bind(
+	mainMod .. " + mouse_down",
+	throttled_scroll(hl.dsp.focus({ workspace = "e+1" })),
+	{ description = "Switch to next workspace" }
+)
+
+hl.bind(
+	mainMod .. " + mouse_up",
+	throttled_scroll(hl.dsp.focus({ workspace = "e-1" })),
+	{ description = "Switch to previous workspace" }
+)
 
 -- Laptop multimedia keys for volume and LCD brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true, description = "Raise volume" })
